@@ -105,6 +105,12 @@ function App() {
   return (
     <div className="App">
       <header className="App-header">
+        <img
+          src="konieldo.png"
+          alt="Koniec Eldorado"
+          width={400}
+          height={400}
+        />
         <h1>Czy to koniec eldorado?</h1>
         <div className="button-container">
           <button
