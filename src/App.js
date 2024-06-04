@@ -5,7 +5,7 @@ import "./App.css";
 import { db } from "./firebaseConfig";
 import { doc, getDoc, setDoc, onSnapshot } from "firebase/firestore";
 import FingerprintJS from "@fingerprintjs/fingerprintjs";
-import { paragraphsYes } from "./data";
+import { paragraphsYes, paragraphsNo } from "./data";
 import ReactGA from "react-ga";
 
 function initializeAnalytics() {
@@ -17,8 +17,12 @@ function App() {
   const [voted, setVoted] = useState(false);
   const [fingerprint, setFingerprint] = useState(null);
   const [selectedParagraph, setSelectedParagraph] = useState("");
-  const [carouselParagraphs, setCarouselParagraphs] = useState(paragraphsYes);
+  const [carouselParagraphs, setCarouselParagraphs] = useState([
+    ...paragraphsYes,
+    paragraphsNo,
+  ]);
   const [currentCarouselIndex, setCurrentCarouselIndex] = useState(0);
+  const [voteType, setVoteType] = useState(null);
 
   useEffect(() => {
     initializeAnalytics();
@@ -51,7 +55,7 @@ function App() {
       setCurrentCarouselIndex((currentIndex) =>
         currentIndex < carouselParagraphs.length - 1 ? currentIndex + 1 : 0,
       );
-    }, 6000); // Change paragraph every 3 seconds
+    }, 6000); // Change paragraph every 6 seconds
 
     return () => clearInterval(intervalId);
   }, [carouselParagraphs]);
@@ -85,13 +89,15 @@ function App() {
       await setDoc(userRef, { voted: true });
 
       setVoted(true);
+      setVoteType(vote); // Set the vote type to 'yes' or 'no'
 
-      // Select a random paragraph
-      const randomIndex = Math.floor(Math.random() * paragraphsYes.length);
-      setSelectedParagraph(paragraphsYes[randomIndex]);
+      // Select a random paragraph based on the vote
+      const paragraphs = vote === "yes" ? paragraphsYes : paragraphsNo;
+      const randomIndex = Math.floor(Math.random() * paragraphs.length);
+      setSelectedParagraph(paragraphs[randomIndex]);
 
       // Update the carousel to exclude the selected paragraph
-      const remainingParagraphs = paragraphsYes.filter(
+      const remainingParagraphs = paragraphs.filter(
         (_, index) => index !== randomIndex,
       );
       setCarouselParagraphs(remainingParagraphs);
