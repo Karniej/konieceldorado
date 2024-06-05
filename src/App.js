@@ -120,14 +120,14 @@ function App() {
         <h1>Czy to koniec eldorado?</h1>
         <div className="button-container">
           <button
-            className="App-button"
+            className="App-button yes"
             onClick={() => handleVote("yes")}
             disabled={voted}
           >
             Tak
           </button>
           <button
-            className="App-button"
+            className="App-button no"
             onClick={() => handleVote("no")}
             disabled={voted}
           >
